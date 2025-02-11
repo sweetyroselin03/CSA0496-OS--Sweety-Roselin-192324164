@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *source, *destination;
+    char source_file[100], destination_file[100];
+    char buffer[1024];
+    size_t bytesRead;
+
+    printf("Enter source file name: ");
+    scanf("%s", source_file);
+
+    printf("Enter destination file name: ");
+    scanf("%s", destination_file);
+
+    source = fopen(source_file, "rb");
+    if (source == NULL) {
+        perror("Error opening source file");
+        return 1;
+    }
+
+    destination = fopen(destination_file, "wb");
+    if (destination == NULL) {
+        perror("Error opening destination file");
+        fclose(source);
+        return 1;
+    }
+
+    while ((bytesRead = fread(buffer, 1, sizeof(buffer), source)) > 0) {
+        fwrite(buffer, 1, bytesRead, destination);
+    }
+
+    printf("File copied successfully from '%s' to '%s'\n", source_file, destination_file);
+
+    fclose(source);
+    fclose(destination);
+
+    return 0;
+}
