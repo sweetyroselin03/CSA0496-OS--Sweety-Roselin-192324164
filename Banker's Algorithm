@@ -1,0 +1,67 @@
+#include <stdio.h>
+#define P 5  // Number of processes
+#define R 3  // Number of resources
+int available[R];
+int maximum[P][R];
+int allocation[P][R];
+int need[P][R];
+int isSafe() {
+    int work[R];
+    int finish[P];
+    for (int i = 0; i < R; i++) work[i] = available[i];
+    for (int i = 0; i < P; i++) finish[i] = 0;
+    int count = 0;
+    while (count < P) {
+        int found = 0;
+        for (int i = 0; i < P; i++) {
+            if (!finish[i]) {
+                int j;
+                for (j = 0; j < R; j++) {
+                    if (need[i][j] > work[j]) break;
+                }
+                if (j == R) {
+                    for (int k = 0; k < R; k++) work[k] += allocation[i][k];
+                    finish[i] = 1;
+                    count++;
+                    found = 1;
+                }
+            }
+        }
+        if (!found) return 0;
+    }
+    return 1;
+}
+void calculateNeed() {
+    for (int i = 0; i < P; i++) {
+        for (int j = 0; j < R; j++) {
+            need[i][j] = maximum[i][j] - allocation[i][j];
+        }
+    }
+}
+int main() {
+    int totalResources[R];
+    printf("Enter total resources available for each type (space separated): ");
+    for (int i = 0; i < R; i++) scanf("%d", &totalResources[i]);
+    printf("Enter allocated resources for each process:\n");
+    for (int i = 0; i < P; i++) {
+        printf("Process %d: ", i);
+        for (int j = 0; j < R; j++) scanf("%d", &allocation[i][j]);
+    }
+    printf("Enter max demand for each process:\n");
+    for (int i = 0; i < P; i++) {
+        printf("Process %d: ", i);
+        for (int j = 0; j < R; j++) scanf("%d", &maximum[i][j]);
+    }
+    for (int i = 0; i < R; i++) {
+        int sum = 0;
+        for (int j = 0; j < P; j++) sum += allocation[j][i];
+        available[i] = totalResources[i] - sum;
+    }
+    calculateNeed();
+    if (isSafe()) {
+        printf("System is in a safe state.\n");
+    } else {
+        printf("System is in a deadlock state.\n");
+    }
+    return 0;
+}
