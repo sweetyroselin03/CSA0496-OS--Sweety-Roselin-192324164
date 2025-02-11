@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int main() {
+    pid_t pid;
+    pid = fork();
+    if (pid == -1) {
+        perror("Fork failed");
+        return 1;
+    }
+    else if (pid == 0) {
+        printf("Child Process: Executing new program\n");
+        execl("/bin/ls", "ls", NULL);
+        perror("Exec failed");
+    }
+    else {
+        printf("Parent Process: Waiting for child to complete...\n");
+        wait(NULL);
+        printf("Parent Process: Child completed\n");
+    }
+
+    return 0;
+}
