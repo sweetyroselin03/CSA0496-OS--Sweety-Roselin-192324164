@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <string.h>
+struct File {
+    char name[50];
+    int size;
+};
+struct Directory {
+    char name[50];
+    struct File files[10];
+    int fileCount;
+};
+void addDirectory(struct Directory directories[], int *dirCount, char name[]) {
+    strcpy(directories[*dirCount].name, name);
+    directories[*dirCount].fileCount = 0;
+    (*dirCount)++;
+}
+void addFile(struct Directory *dir, char fileName[], int size) {
+    strcpy(dir->files[dir->fileCount].name, fileName);
+    dir->files[dir->fileCount].size = size;
+    dir->fileCount++;
+}
+void displayDirectories(struct Directory directories[], int dirCount) {
+    for (int i = 0; i < dirCount; i++) {
+        printf("\nDirectory: %s\n", directories[i].name);
+        printf("File Name\tFile Size\n");
+        for (int j = 0; j < directories[i].fileCount; j++) {
+            printf("%s\t\t%d\n", directories[i].files[j].name, directories[i].files[j].size);
+        }
+    }
+}
+int main() {
+    struct Directory directories[10];
+    int dirCount = 0, choice, size;
+    char dirName[50], fileName[50];
+    while (1) {
+        printf("\n1. Add Directory\n2. Add File\n3. Display Directories\n4. Exit\nEnter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter directory name: ");
+                scanf("%s", dirName);
+                addDirectory(directories, &dirCount, dirName);
+                break;
+            case 2:
+                printf("Enter directory name to add file to: ");
+                scanf("%s", dirName);
+                printf("Enter file name: ");
+                scanf("%s", fileName);
+                printf("Enter file size: ");
+                scanf("%d", &size);
+                for (int i = 0; i < dirCount; i++) {
+                    if (strcmp(directories[i].name, dirName) == 0) {
+                        addFile(&directories[i], fileName, size);
+                        break;
+                    }
+                }
+                break;
+            case 3:
+                displayDirectories(directories, dirCount);
+                break;
+            case 4:
+                return 0;
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+}
