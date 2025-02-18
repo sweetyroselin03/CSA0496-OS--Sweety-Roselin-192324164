@@ -1,0 +1,34 @@
+#include <stdio.h>
+#define MAX_BLOCKS 10
+#define MAX_PROCESSES 10
+void firstFit(int blocks[], int blockSize, int processes[], int processSize) {
+    int allocation[MAX_PROCESSES];
+    for (int i = 0; i < processSize; i++) {
+        allocation[i] = -1;
+    }
+    for (int i = 0; i < processSize; i++) {
+        for (int j = 0; j < blockSize; j++) {
+            if (blocks[j] >= processes[i]) {
+                allocation[i] = j;
+                blocks[j] -= processes[i];
+                break;
+            }
+        }
+    }
+    printf("Process No\tProcess Size\tBlock No\tBlock Size\n");
+    for (int i = 0; i < processSize; i++) {
+        if (allocation[i] != -1) {
+            printf("%d\t\t%d\t\t%d\t\t%d\n", i + 1, processes[i], allocation[i] + 1, blocks[allocation[i]]);
+        } else {
+            printf("%d\t\t%d\t\tNot Allocated\n", i + 1, processes[i]);
+        }
+    }
+}
+int main() {
+    int blocks[MAX_BLOCKS] = {100, 500, 200, 300, 600};
+    int processes[MAX_PROCESSES] = {212, 417, 112, 426};
+    int blockSize = 5;
+    int processSize = 4;
+    firstFit(blocks, blockSize, processes, processSize);
+    return 0;
+}
