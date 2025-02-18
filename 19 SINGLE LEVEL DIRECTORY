@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <string.h>
+struct File {
+    char name[50];
+    int size;
+};
+void addFile(struct File files[], int *n, char name[], int size) {
+    strcpy(files[*n].name, name);
+    files[*n].size = size;
+    (*n)++;
+}
+void displayFiles(struct File files[], int n) {
+    printf("File Name\tFile Size\n");
+    printf("-------------------------\n");
+    for (int i = 0; i < n; i++) {
+        printf("%s\t\t%d\n", files[i].name, files[i].size);
+    }
+}
+int main() {
+    struct File files[10];
+    int n = 0, choice, size;
+    char name[50];
+    while (1) {
+        printf("\n1. Add File\n2. Display Files\n3. Exit\nEnter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter file name: ");
+                scanf("%s", name);
+                printf("Enter file size: ");
+                scanf("%d", &size);
+                addFile(files, &n, name, size);
+                break;
+            case 2:
+                displayFiles(files, n);
+                break;
+            case 3:
+                return 0;
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+}
