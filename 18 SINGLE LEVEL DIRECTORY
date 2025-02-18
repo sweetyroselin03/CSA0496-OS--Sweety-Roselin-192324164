@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+void SCAN(int requests[], int n, int initial_head, int disk_size, int direction) {
+    int seek_count = 0;
+    int distance, cur_track;
+    int cur_position = initial_head;
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (requests[i] > requests[j]) {
+                int temp = requests[i];
+                requests[i] = requests[j];
+                requests[j] = temp;
+            }
+        }
+    }
+    if (direction == 1) {
+        for (int i = 0; i < n; i++) {
+            if (requests[i] >= cur_position) {
+                cur_track = requests[i];
+                distance = abs(cur_track - cur_position);
+                seek_count += distance;
+                cur_position = cur_track;
+                printf("Moved to track %d, Seek distance: %d\n", cur_track, distance);
+            }
+        }
+        cur_position = disk_size - 1;
+        for (int i = n - 1; i >= 0; i--) {
+            if (requests[i] < cur_position) {
+                cur_track = requests[i];
+                distance = abs(cur_track - cur_position);
+                seek_count += distance;
+                cur_position = cur_track;
+                printf("Moved to track %d, Seek distance: %d\n", cur_track, distance);
+            }
+        }
+    } else {
+        for (int i = n - 1; i >= 0; i--) {
+            if (requests[i] <= cur_position) {
+                cur_track = requests[i];
+                distance = abs(cur_track - cur_position);
+                seek_count += distance;
+                cur_position = cur_track;
+                printf("Moved to track %d, Seek distance: %d\n", cur_track, distance);
+            }
+        }
+        cur_position = 0;
+        for (int i = 0; i < n; i++) {
+            if (requests[i] > cur_position) {
+                cur_track = requests[i];
+                distance = abs(cur_track - cur_position);
+                seek_count += distance;
+                cur_position = cur_track;
+                printf("Moved to track %d, Seek distance: %d\n", cur_track, distance);
+            }
+        }
+    }
+    printf("Total Seek Count: %d\n", seek_count);
+}
+int main() {
+    int n, initial_head, disk_size, direction;
+    printf("Enter the number of disk requests: ");
+    scanf("%d", &n);
+    int requests[n];
+    printf("Enter the disk requests:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &requests[i]);
+    }
+    printf("Enter the disk size (total number of tracks): ");
+    scanf("%d", &disk_size);
+    printf("Enter the initial head position: ");
+    scanf("%d", &initial_head);
+    printf("Enter the direction (1 for right, 0 for left): ");
+    scanf("%d", &direction);
+    SCAN(requests, n, initial_head, disk_size, direction);
+    return 0;
+}
